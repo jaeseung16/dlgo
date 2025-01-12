@@ -74,21 +74,21 @@ class Board():
             else:
                 if neighbor_string not in adjacent_opposite_color:
                     adjacent_opposite_color.append(neighbor_string)
-        new_string = GoString(player, [point], liberties)
+        new_string = GoString(player, [point], set(liberties))
 
         for same_color_string in adjacent_same_color:
             new_string = new_string.merged_with(same_color_string)
         for new_string_point in new_string.stones:
             self._grid[new_string_point] = new_string
         for other_color_string in adjacent_opposite_color:
-            other_color_string.remove_libertiy(point)
+            other_color_string.remove_liberty(point)
         for other_color_string in adjacent_opposite_color:
             if other_color_string.num_liberties == 0:
                 self._remove_string(other_color_string)
 
 
     def is_on_grid(self, point):
-        return 1 <= point.row <= self.num_rows and 1 <= point.col <= self.num.cols
+        return 1 <= point.row <= self.num_rows and 1 <= point.col <= self.num_cols
 
     def get(self, point):
         string = self._grid.get(point)
@@ -117,7 +117,7 @@ class GameState():
     def __init__(self, board, next_player, previous, move):
         self.board = board
         self.next_player = next_player
-        self.previoud_state = previous
+        self.previous_state = previous
         self.last_move = move
 
     def apply_move(self, move):
@@ -163,7 +163,7 @@ class GameState():
         next_board = copy.deepcopy(self.board)
         next_board.place_stone(player, move.point)
         next_situation = (player.other, next_board)
-        past_state = self.previoud_state
+        past_state = self.previous_state
         while past_state is not None:
             if past_state.situation == next_situation:
                 return True
@@ -178,5 +178,5 @@ class GameState():
         return (
                 self.board.get(move.point) is None and
                 not self.is_move_self_capture(self.next_player, move) and
-                not self.does_move_violate_ko((self.next_player, move))
+                not self.does_move_violate_ko(self.next_player, move)
         )

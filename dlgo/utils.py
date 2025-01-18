@@ -8,6 +8,7 @@ STONE_TO_CHAR = {
     gotypes.Player.white: ' o ',
 }
 
+
 def print_move(player, move):
     if move.is_pass:
         move_str = 'passes'

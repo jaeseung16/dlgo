@@ -10,6 +10,7 @@ def to_python(player_state):
         return Player.black
     return Player.white
 
+
 MAX63 = 0x7fffffffffffffff
 
 table = {}

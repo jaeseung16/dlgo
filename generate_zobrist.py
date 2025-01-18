@@ -20,7 +20,7 @@ for row in range(1,20):
             code = random.randint(0, MAX63)
             table[Point(row, col), state] = code
 
-print('from .goytpes import Player, Point')
+print('from .gotypes import Player, Point')
 print('')
 print("__all__ = ['HASH_CODE', 'EMPTY_BOARD']")
 print('')

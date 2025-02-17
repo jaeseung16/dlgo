@@ -1,3 +1,3 @@
 from .alphabeta import *
-from .depthprue import *
+from .depthprune import *
 from .minimax import *

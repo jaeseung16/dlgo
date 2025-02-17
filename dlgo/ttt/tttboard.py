@@ -53,7 +53,7 @@ class GameState:
         self.next_player = next_player
         self.last_move = move
 
-    def apply_mopve(self, move):
+    def apply_move(self, move):
         """Return the new GameState after applying the move."""
         next_board = copy.deepcopy(self.board)
         next_board.place(self.next_player, move.point)
@@ -67,7 +67,7 @@ class GameState:
     def is_valid_move(self, move):
         return (self.board.get(move.point) is None and not self.is_over())
 
-    def legal_move(self):
+    def legal_moves(self):
         moves = []
         for row in ROWS:
             for col in COLS:

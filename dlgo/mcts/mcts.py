@@ -144,9 +144,10 @@ class MCTSAgent(agent.Agent):
 
     @staticmethod
     def simulate_random_game(game):
+        # FastRandomBot?
         bots = {
-            Player.black: agent.FastRanomBot(),
-            Player.white: agent.FastRandomBot(),
+            Player.black: agent.RandomBot(),
+            Player.white: agent.RandomBot(),
         }
         while not game.is_over():
             bot_move = bots[game.next_player].select_move(game)

@@ -62,8 +62,8 @@ class DepthPrunedAgent(Agent):
                 best_moves = [possible_move]
                 best_score = our_best_outcome
             elif our_best_outcome == best_score:
-                # This is as good as our previous best movew.
+                # This is as good as our previous best move.
                 best_moves.append(possible_move)
 
         # For variety, randomly select among all equally good moves.
-        return random.choice[best_moves]
+        return random.choice(best_moves)

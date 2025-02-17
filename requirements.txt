@@ -5,5 +5,5 @@ flask-cors
 future
 h5py
 tensorflow
-six
+#six
 gomill

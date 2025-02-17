@@ -93,3 +93,10 @@ def _collect_region(start_pos, board, visited=None):
     return all_points, all_borders
 
 
+def compute_game_result(game_state):
+    territory = evaluate_territory(game_state.board)
+    return GameResult(
+        territory.num_black_territory + territory.num_black_stones,
+        territory.num_white_territory + territory.num_white_stones,
+        komi=7.5
+    )

@@ -10,10 +10,10 @@ def encode_label(j):
 def shape_data(data):
     features = [np.reshape(x, (784,1)) for x in data[0]]
     labels = [encode_label(y) for y in data[1]]
-    return zip(features, labels)
+    return list(zip(features, labels))
 
 def load_data():
     with gzip.open('mnist.pkl.gz', 'rb') as f:
-        train_data, validataion_data, test_data = pickle.load(f)
+        training_data, validation_data, test_data = pickle.load(f, encoding="latin1")
 
-    return shape_data(train_data), shape_data(test_data)
+    return shape_data(training_data), shape_data(test_data)

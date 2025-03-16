@@ -4,6 +4,7 @@ flask
 flask-cors
 future
 h5py
+six
+sgfmill
 tensorflow
-#six
-gomill
+matplotlib

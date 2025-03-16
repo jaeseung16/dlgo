@@ -7,7 +7,7 @@ def sigmoid(z):
     return np.vectorize(sigmoid_double)(z)
 
 def sigmonid_prime_double(x):
-    return sigmoid_double(x) * (1 - sigmoid_double(X))
+    return sigmoid_double(x) * (1 - sigmoid_double(x))
 
 def sigmoid_prime(z):
     return np.vectorize(sigmonid_prime_double)(z)
@@ -35,9 +35,18 @@ class Layer:
 
     def get_forward_input(self):
         if self.previous is not None:
-            return self.previous.output_delta
+            return self.previous.output_data
         else:
             return self.input_data
+
+    def backward(self):
+        raise NotImplementedError
+
+    def get_backward_input(self):
+        if self.next is not None:
+            return self.next.output_delta
+        else:
+            return self.input_delta
 
     def clear_deltas(self):
         pass
@@ -87,7 +96,7 @@ class DenseLayer(Layer):
 
     def forward(self):
         data = self.get_forward_input()
-        self.output_Data = np.dot(self.weight, data) + self.bias
+        self.output_data = np.dot(self.weight, data) + self.bias
 
     def backward(self):
         data = self.get_forward_input()

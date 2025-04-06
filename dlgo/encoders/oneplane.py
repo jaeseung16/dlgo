@@ -12,7 +12,7 @@ class OnePlaneEncoder(Encoder):
     def name(self):
         return 'oneplane'
 
-    def encond(self, game_state):
+    def encode(self, game_state):
         board_matrix = np.zeros(self.shape())
         next_player = game_state.next_player
         for r in range(self.board_height):

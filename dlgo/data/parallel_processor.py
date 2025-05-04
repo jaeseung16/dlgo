@@ -174,13 +174,13 @@ class GoDataProcessor:
             base_name = zip_name.replace('.tar.gz', '')
             data_file_name = base_name + data_type
             if not os.path.isfile(self.data_dir + '/' + data_file_name):
-                zips_to_process.append((self.__class__, self.encoder_String, zip_name, data_file_name, indices_by_zip_name[zip_name]))
+                zips_to_process.append((self.__class__, self.encoder_string, zip_name, data_file_name, indices_by_zip_name[zip_name]))
 
         cores = multiprocessing.cpu_count()
         pool = multiprocessing.Pool(processes=cores)
         p = pool.map_async(worker, zips_to_process)
         try:
-            _ = p.set()
+            _ = p.get()
         except KeyboardInterrupt:
             pool.terminate()
             pool.join()

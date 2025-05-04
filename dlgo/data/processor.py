@@ -179,7 +179,7 @@ class GoDataProcessor:
         for index in game_list:
             name = name_list[index + 1]
             if name.endswith('.sgf'):
-                sgf_content = zip_file.extractfie(name).read()
+                sgf_content = zip_file.extractfile(name).read()
                 sgf = Sgf_game.from_string(sgf_content)
                 game_state, first_move_done = self.get_handicap(sgf)
 

@@ -177,6 +177,7 @@ class GoDataProcessor:
                 zips_to_process.append((self.__class__, self.encoder_string, zip_name, data_file_name, indices_by_zip_name[zip_name]))
 
         cores = multiprocessing.cpu_count()
+        #multiprocessing.set_start_method('fork')
         pool = multiprocessing.Pool(processes=cores)
         p = pool.map_async(worker, zips_to_process)
         try:
@@ -206,3 +207,6 @@ class GoDataProcessor:
             else:
                 raise ValueError(name + ' is not a valid sgf')
         return total_examples
+
+if __name__ == '__main__':
+    multiprocessing.freeze_support()

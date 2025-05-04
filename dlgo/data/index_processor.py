@@ -43,6 +43,7 @@ class KGSIndex:
             if not os.path.isfile(self.data_directory + '/' + file_name):
                 urls_to_download.append((url, self.data_directory + '/' + file_name))
         cores = multiprocessing.cpu_count()
+        multiprocessing.set_start_method('fork')
         pool = multiprocessing.Pool(processes=cores)
         try:
             it = pool.imap(worker, urls_to_download)

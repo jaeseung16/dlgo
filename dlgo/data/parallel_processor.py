@@ -171,13 +171,18 @@ class GoDataProcessor:
 
         zips_to_process = []
         for zip_name in zip_names:
+            year = zip_name.split('-')
+            if not year == '2015' or not year == '2016':
+                continue
+
             base_name = zip_name.replace('.tar.gz', '')
             data_file_name = base_name + data_type
             if not os.path.isfile(self.data_dir + '/' + data_file_name):
                 zips_to_process.append((self.__class__, self.encoder_string, zip_name, data_file_name, indices_by_zip_name[zip_name]))
 
         cores = multiprocessing.cpu_count()
-        #multiprocessing.set_start_method('fork')
+        if multiprocessing.get_start_method(allow_none=True) is None:
+            multiprocessing.set_start_method('fork')
         pool = multiprocessing.Pool(processes=cores)
         p = pool.map_async(worker, zips_to_process)
         try:

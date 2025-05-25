@@ -1,9 +1,10 @@
 from keras.layers import Dense, Activation, Flatten
-from keras.layers import Conv2D, ZeroPadding2D
+from keras.layers import Conv2D, ZeroPadding2D, Input
 
 def layers(input_shape):
     return [
-        ZeroPadding2D((3, 3), input_shape=input_shape, data_format='channels_first'),
+        Input(shape=input_shape),
+        ZeroPadding2D((3, 3), data_format='channels_first'),
         Conv2D(64, (7, 7), data_format='channels_first'),
         Activation('relu'),
 

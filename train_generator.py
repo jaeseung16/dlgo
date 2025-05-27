@@ -11,7 +11,7 @@ from keras.callbacks import ModelCheckpoint
 
 go_board_rows, go_board_cols = 19, 19
 num_classes = go_board_rows * go_board_cols
-num_games = 100
+num_games = 12288
 
 print("Initializing encoder")
 encoder = OnePlaneEncoder((go_board_rows, go_board_cols))
@@ -46,11 +46,11 @@ epochs = 5
 batch_size = 128
 model.fit(x=generator.generate(batch_size, num_classes),
           epochs=epochs,
-          verbose=1,
+          #verbose=2,
           callbacks=[ModelCheckpoint('../checkpoints/small_model_epoch_{epoch}.h5')],
           validation_data=test_generator.generate(batch_size, num_classes),
-          steps_per_epoch=generator.get_num_samples() / batch_size,
-          validation_steps=test_generator.get_num_samples() / batch_size
+          steps_per_epoch=int(generator.get_num_samples() / batch_size),
+          validation_steps=int(test_generator.get_num_samples() / batch_size)
           )
 
 model.evaluate(x=test_generator.generate(batch_size, num_classes),

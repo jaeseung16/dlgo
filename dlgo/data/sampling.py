@@ -98,10 +98,6 @@ class Sampler:
             if year > self.cap_year:
                 continue
 
-            month = int(filename.split('-')[1].split('_')[1])
-            if month > 12:
-                continue
-
             num_games = fileinfo['num_games']
             for i in range(num_games):
                 available_games.append((filename, i))

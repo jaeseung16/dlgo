@@ -102,13 +102,14 @@ class GoDataProcessor:
         feature_file_base = self.data_dir + '/' + data_file_name + '_features_%d'
         label_file_base = self.data_dir + '/' + data_file_name + '_labels_%d'
 
-        chunk = 0 # Due to files with large content, split up after chunksize
+        chunk = 0
+        # Due to files with large content, split up after chunksize
         chunksize = 1024
         while features.shape[0] >= chunksize:
             feature_file = feature_file_base % chunk
             label_file = label_file_base % chunk
             chunk += 1
-            current_features, features = features[:chunksize], features[:chunksize]
+            current_features, features = features[:chunksize], features[chunksize:]
             current_labels, labels = labels[:chunksize], labels[chunksize:]
             np.save(feature_file, current_features)
             np.save(label_file, current_labels)

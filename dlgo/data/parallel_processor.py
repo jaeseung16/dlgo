@@ -37,6 +37,7 @@ class GoDataProcessor:
         index = KGSIndex(data_directory=self.data_dir)
         index.download_files()
 
+        print("Initializing Sampler: data_type={}".format(data_type))
         sampler = Sampler(data_dir=self.data_dir)
         data = sampler.draw_data(data_type, num_samples)
 
@@ -68,7 +69,7 @@ class GoDataProcessor:
         total_examples = self.num_total_examples(zip_file, game_list, name_list)
 
         shape = self.encoder.shape()
-        feature_shape = np.insert(shape, 0 , np.asarray([total_examples]))
+        feature_shape = np.insert(shape, 0, np.asarray([total_examples]))
         features = np.zeros(feature_shape)
         labels = np.zeros((total_examples,))
 
@@ -170,12 +171,13 @@ class GoDataProcessor:
                 indices_by_zip_name[filename] = []
             indices_by_zip_name[filename].append(index)
 
+        #print(indices_by_zip_name)
+        #print(zip_names)
         zips_to_process = []
         for zip_name in zip_names:
-            year = zip_name.split('-')
-            if not year == '2015' or not year == '2016':
-                continue
-
+            #year = zip_name.split('-')
+            #if not year == '2015' or not year == '2016':
+            #    continue
             base_name = zip_name.replace('.tar.gz', '')
             data_file_name = base_name + data_type
             if not os.path.isfile(self.data_dir + '/' + data_file_name):

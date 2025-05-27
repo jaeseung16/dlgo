@@ -19,6 +19,7 @@ class Sampler:
 
         random.seed(seed)
         self.compute_test_samples()
+        print("Sampler: Number of test games={}".format(len(self.test_games)))
 
     def draw_data(self, data_type, num_samples):
         if data_type == 'test':
@@ -71,7 +72,7 @@ class Sampler:
         print('total num training games: ' + str(len(self.train_games)))
 
     def compute_test_samples(self):
-        """If not already existing, create local file to stor fixed set of test samples"""
+        """If not already existing, create local file to store fixed set of test samples"""
         if not os.path.isfile(self.test_folder):
             test_games = self.draw_samples(self.num_test_games)
             test_sample_file = open(self.test_folder, 'w')
@@ -90,12 +91,17 @@ class Sampler:
     def draw_training_samples(self, num_sample_games):
         """Draw training games, not overlapping with any of the test games."""
         available_games = []
-        index= KGSIndex(data_directory=self.data_dir)
+        index = KGSIndex(data_directory=self.data_dir)
         for fileinfo in index.file_info:
             filename = fileinfo['filename']
             year = int(filename.split('-')[1].split('_')[0])
             if year > self.cap_year:
                 continue
+
+            month = int(filename.split('-')[1].split('_')[1])
+            if month > 12:
+                continue
+
             num_games = fileinfo['num_games']
             for i in range(num_games):
                 available_games.append((filename, i))

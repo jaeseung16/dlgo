@@ -30,6 +30,8 @@ class KGSIndex:
         self.file_info = []
         self.urls = []
         self.load_index()
+        print("KGSIndex initialized: # of file_info={}".format(len(self.file_info)))
+        #print("file_info={}".format(self.file_info))
 
     def download_files(self):
         """Download zip files by distributing work on all available CPUs"""
@@ -42,6 +44,8 @@ class KGSIndex:
             file_name = file_info['filename']
             if not os.path.isfile(self.data_directory + '/' + file_name):
                 urls_to_download.append((url, self.data_directory + '/' + file_name))
+
+        print("the number of urls to download={}".format(len(urls_to_download)))
         cores = multiprocessing.cpu_count()
         if multiprocessing.get_start_method(allow_none=True) is None:
             multiprocessing.set_start_method('fork')
@@ -78,6 +82,7 @@ class KGSIndex:
 
     def load_index(self):
         """Create the actual index representation from the previously downloaded or cached html."""
+        print("loading index")
         index_contents = self.create_index_page()
         split_page =[item for item in index_contents.split('<a href="') if item.startswith("https://")]
         for item in split_page:
@@ -88,7 +93,7 @@ class KGSIndex:
             filename = os.path.basename(url)
             split_file_name = filename.split('-')
             num_games = int(split_file_name[len(split_file_name) -2])
-            print(filename + ' ' + str(num_games))
+            # print(filename + ' ' + str(num_games))
             self.file_info.append({'url': url, 'filename': filename, 'num_games': num_games})
 
 

@@ -13,11 +13,16 @@ go_board_rows, go_board_cols = 19, 19
 num_classes = go_board_rows * go_board_cols
 num_games = 100
 
+print("Initializing encoder")
 encoder = OnePlaneEncoder((go_board_rows, go_board_cols))
 
+print("Initializing data processor")
 processor = GoDataProcessor(encoder=encoder.name())
 
+print(">>> Generator for training data")
 generator = processor.load_go_data('train', num_games, use_generator=True)
+
+print(">>> Generator for test data")
 test_generator = processor.load_go_data('test', num_games, use_generator=True)
 #generator = processor.load_go_data('train', num_games)
 #test_generator = processor.load_go_data('test', num_games)
@@ -31,8 +36,13 @@ for layer in network_layers:
 model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
 
+import datetime
+now = datetime.datetime.now()
+print("Starting at {}".format(now.strftime("%Y%m%d %H:%M:%S")))
 
-epochs=5
+model.summary()
+
+epochs = 5
 batch_size = 128
 model.fit(x=generator.generate(batch_size, num_classes),
           epochs=epochs,

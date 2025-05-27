@@ -43,7 +43,7 @@ class GoDataProcessor:
         # Map workload to CPUs
         self.map_to_workers(data_type, data)
         if use_generator:
-            generator = DataGenerator(self.data_dir, data)
+            generator = DataGenerator(self.data_dir, data_type, data)
             # Either return a Go data generator...
             return generator
         else:

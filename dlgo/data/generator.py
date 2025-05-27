@@ -4,12 +4,15 @@ from keras.utils import to_categorical
 
 
 class DataGenerator:
-    def __init__(self, data_directory, samples):
+    def __init__(self, data_directory, data_type, samples):
         self.data_directory = data_directory
         self.samples = samples
         # Our generator has access to a set of files that we sampled earlier
         self.files = set(file_name for file_name, index in samples)
         self.num_samples = None
+        self.data_type = data_type
+        print("DataGenerator: # of files={}".format(len(self.files)))
+        #print(self.files)
 
     # Depending on the application, we may need to know how many examples we have.
     def get_num_samples(self, batch_size=128, num_classes=19 * 19):
@@ -23,7 +26,7 @@ class DataGenerator:
 
     def _generate(self, batch_size, num_classes):
         for zip_file_name in self.files:
-            file_name = zip_file_name.replace('.tar.gz', '') + 'train'
+            file_name = zip_file_name.replace('.tar.gz', '') + self.data_type
             base = self.data_directory + '/' + file_name + '_features_*.npy'
             for feature_file in glob.glob(base):
                 label_file = feature_file.replace('features', 'labels')

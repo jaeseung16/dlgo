@@ -10,7 +10,7 @@ import h5py
 from keras.models import Sequential
 from keras.layers import Dense
 
-from dlgo.agent.predict import DeepLearningAgent, load_predication_agent
+from dlgo.agent.predict import DeepLearningAgent, load_prediction_agent
 from dlgo.data.parallel_processor import GoDataProcessor
 from dlgo.encoders.sevenplane import SevenPlaneEncoder
 from dlgo.httpfrontend import get_web_app
@@ -21,7 +21,7 @@ nb_classes = go_board_rows * go_board_cols
 encoder = SevenPlaneEncoder((go_board_rows, go_board_cols))
 processor = GoDataProcessor(encoder=encoder.name())
 
-X, y = processor.load_go_date(num_samples=100)
+X, y = processor.load_go_data(num_samples=100)
 
 input_shape = (encoder.num_planes, go_board_rows, go_board_cols)
 model = Sequential()

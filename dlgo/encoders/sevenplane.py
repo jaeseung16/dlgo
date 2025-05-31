@@ -14,14 +14,14 @@ class SevenPlaneEncoder(Encoder):
 
     def encode(self, game_state):
         board_tensor = np.zeros(self.shape())
-        base_plane = { game_state.next_player: 0,
+        base_plane = {game_state.next_player: 0,
                        game_state.next_player.other: 3}
         for row in range(self.board_height):
             for col in range(self.board_width):
                 p = Point(row=row + 1, col=col + 1)
                 go_string = game_state.board.get_go_string(p)
                 if go_string is None:
-                    if game_state.does_move_violoate_ko(game_state.next_player, Move.play(p)):
+                    if game_state.does_move_violate_ko(game_state.next_player, Move.play(p)):
                         board_tensor[6][row][col] = 1
                 else:
                     liberty_plane = min(3, go_string.num_liberties) - 1
@@ -44,5 +44,5 @@ class SevenPlaneEncoder(Encoder):
         return self.num_planes, self.board_height, self.board_width
 
 
-def crate(board_size):
+def create(board_size):
     return SevenPlaneEncoder(board_size)

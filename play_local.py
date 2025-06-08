@@ -1,3 +1,4 @@
+import io
 import subprocess
 import re
 import h5py
@@ -24,8 +25,10 @@ class LocalGtpBot:
         self.their_color = self.our_color.other
 
         cmd = self.opponent_cmd(opponent)
+        print("LocalGtpBot: running {}".format(cmd))
         pipe = subprocess.PIPE
-        self.gtp_stream = subprocess.Popen(cmd, stdin=pipe, stdout=pipe)
+        self.gtp_stream = subprocess.Popen(cmd, stdin=pipe, stdout=pipe, bufsize=0)
+        print("LocalGtpBot: pid={}".format(self.gtp_stream.pid))
 
     @staticmethod
     def opponent_cmd(opponent):
@@ -39,11 +42,11 @@ class LocalGtpBot:
     def send_command(self, cmd):
         self.gtp_stream.stdin.write(cmd.encode('utf-8'))
 
-    def get_reponse(self):
+    def get_response(self, cmd):
         succeeded = False
         result = ''
         while not succeeded:
-            line = self.gtp_stream.stdout.readline()
+            line = self.gtp_stream.stdout.readline().decode('utf-8')
             if line[0] == '=':
                 succeeded = True
                 line = line.strip()
@@ -52,7 +55,7 @@ class LocalGtpBot:
 
     def command_and_response(self, cmd):
         self.send_command(cmd)
-        return self.get_reponse()
+        return self.get_response(cmd)
 
     def run(self):
         self.command_and_response("boardsize 19\n")
@@ -115,12 +118,12 @@ class LocalGtpBot:
                 self._stopped = True
         else:
             move = gtp_position_to_coords(pos)
-            self.game_state = self.game_state.apply_move()
+            self.game_state = self.game_state.apply_move(move)
             self.sgf.append(";{}[{}]\n".format(their_letter, self.sgf.coordinates(move)))
 
 
 if __name__ == "__main__":
-    bot = load_prediction_agent(h5py.File("../../agents/deep_bot.h5", "r"))
-    gnu_go = LocalGtpBot(go_bot=bot, termination=PassWhenOpponentPasses(), handicap=0, opponent='pachi')
+    bot = load_prediction_agent(h5py.File("./agents/deep_bot.h5", "r"))
+    gnu_go = LocalGtpBot(go_bot=bot, termination=PassWhenOpponentPasses(), handicap=0, opponent='gnugo')
     gnu_go.run()
 

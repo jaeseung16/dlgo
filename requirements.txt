@@ -7,4 +7,6 @@ h5py
 six
 sgfmill
 tensorflow
+tensorflow-metal
 matplotlib
+torch

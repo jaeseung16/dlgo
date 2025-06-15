@@ -21,9 +21,13 @@ nb_classes = go_board_rows * go_board_cols
 encoder = SevenPlaneEncoder((go_board_rows, go_board_cols))
 processor = GoDataProcessor(encoder=encoder.name())
 
-X, y = processor.load_go_data(num_samples=100)
+# total num games: 179689
+X, y = processor.load_go_data(num_samples=12288)
 
-input_shape = (encoder.num_planes, go_board_rows, go_board_cols)
+print("X.shape={}".format(X.shape))
+print("y.shape={}".format(y.shape))
+
+input_shape = (go_board_rows, go_board_cols, encoder.num_planes)
 model = Sequential()
 network_layers = large.layers(input_shape)
 for layer in network_layers:
@@ -34,7 +38,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['a
 model.fit(X, y, batch_size=128, epochs=20, verbose=1)
 
 deep_learning_bot = DeepLearningAgent(model, encoder)
-deep_learning_bot.serialize("../agents/deep_bot.h5")
+deep_learning_bot.serialize(h5py.File("./agents/deep_bot.h5", "w"))
 
 model_file = h5py.File("../agents/deep_bot.h5", "r")
 bot_from_file = load_prediction_agent(model_file)

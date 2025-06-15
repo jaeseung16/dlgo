@@ -145,7 +145,7 @@ class GoDataProcessor:
         np.save(feature_file, features)
         np.save(label_file, labels)
 
-        return features, labels
+        return np.transpose(features, (0, 2, 3, 1)), labels
 
     @staticmethod
     def get_handicap(sgf):

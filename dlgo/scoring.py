@@ -85,7 +85,7 @@ def _collect_region(start_pos, board, visited=None):
             continue
         neighbor = board.get(next_p)
         if neighbor == here:
-            points, borders =  _collect_region(next_p, board, visited)
+            points, borders = _collect_region(next_p, board, visited)
             all_points += points
             all_borders |= borders
         else:

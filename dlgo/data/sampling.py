@@ -19,7 +19,7 @@ class Sampler:
 
         random.seed(seed)
         self.compute_test_samples()
-        print("Sampler: Number of test games={}".format(len(self.test_games)))
+        print("Sampler: Number of test games={}, data_dir={}".format(len(self.test_games), self.data_dir))
 
     def draw_data(self, data_type, num_samples):
         if data_type == 'test':

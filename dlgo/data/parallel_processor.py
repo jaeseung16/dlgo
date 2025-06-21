@@ -21,8 +21,8 @@ from dlgo.encoders.base import get_encoder_by_name
 
 def worker(jobinfo):
     try:
-        clazz, encoder, zip_file, data_file_name, game_list = jobinfo
-        clazz(encoder=encoder).process_zip(zip_file, data_file_name, game_list)
+        clazz, encoder, data_dir, zip_file, data_file_name, game_list = jobinfo
+        clazz(encoder=encoder).process_zip(data_dir, zip_file, data_file_name, game_list)
     except (KeyboardInterrupt, SystemExit):
         raise Exception('>>> Exiting child process.')
 
@@ -37,7 +37,7 @@ class GoDataProcessor:
         index = KGSIndex(data_directory=self.data_dir)
         index.download_files()
 
-        print("Initializing Sampler: data_type={}".format(data_type))
+        print("Initializing Sampler: data_type={}, data_dir={}".format(data_type, self.data_dir))
         sampler = Sampler(data_dir=self.data_dir)
         data = sampler.draw_data(data_type, num_samples)
 
@@ -52,21 +52,24 @@ class GoDataProcessor:
             # ... or return consolidated data as before
             return features_and_labels
 
-    def unzip_data(self, zip_file_name):
-        this_gz = gzip.open(self.data_dir + '/' + zip_file_name)
+    def unzip_data(self, data_dir, zip_file_name):
+        this_gz = gzip.open(data_dir + '/' + zip_file_name)
 
         tar_file = zip_file_name[0:-3]
-        this_tar = open(self.data_dir + '/' + tar_file, 'wb')
+        this_tar = open(data_dir + '/' + tar_file, 'wb')
 
         shutil.copyfileobj(this_gz, this_tar)
         this_tar.close()
         return tar_file
 
-    def process_zip(self, zip_file_name, data_file_name, game_list):
-        tar_file = self.unzip_data(zip_file_name)
-        zip_file = tarfile.open(self.data_dir + '/' + tar_file)
+    def process_zip(self, data_dir, zip_file_name, data_file_name, game_list):
+        #print("data_dir={}, zip_file_name={}".format(data_dir, zip_file_name))
+        tar_file = self.unzip_data(data_dir, zip_file_name)
+        zip_file = tarfile.open(data_dir + '/' + tar_file)
         name_list = zip_file.getnames()
         total_examples = self.num_total_examples(zip_file, game_list, name_list)
+
+        print("zip_file_name={}: total_examples={}".format(zip_file_name, total_examples))
 
         shape = self.encoder.shape()
         feature_shape = np.insert(shape, 0, np.asarray([total_examples]))
@@ -98,7 +101,9 @@ class GoDataProcessor:
                         labels[counter] = self.encoder.encode_point(point)
                         counter += 1
                     game_state = game_state.apply_move(move)
-                    first_move_dont = True
+                    first_move_done = True
+
+        print("zip_file_name={}: counter={}".format(zip_file_name, counter))
 
         feature_file_base = self.data_dir + '/' + data_file_name + '_features_%d'
         label_file_base = self.data_dir + '/' + data_file_name + '_labels_%d'

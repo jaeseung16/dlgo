@@ -11,7 +11,7 @@ class DataGenerator:
         self.files = set(file_name for file_name, index in samples)
         self.num_samples = None
         self.data_type = data_type
-        print("DataGenerator: # of files={}".format(len(self.files)))
+        print("DataGenerator: # of files={}, data_directory={}".format(len(self.files), self.data_directory))
         #print(self.files)
 
     # Depending on the application, we may need to know how many examples we have.
@@ -25,10 +25,11 @@ class DataGenerator:
             return self.num_samples
 
     def _generate(self, batch_size, num_classes):
-        #print("files={}".format(self.files))
+        #print("files={}, data_directory={}".format(self.files, self.data_directory))
         for zip_file_name in self.files:
             file_name = zip_file_name.replace('.tar.gz', '') + self.data_type
             base = self.data_directory + '/' + file_name + '_features_*.npy'
+            #print("base={}".format(base))
             #print("# of glob={}/zip_file_name={}".format(len(glob.glob(base)), zip_file_name))
             for feature_file in glob.glob(base):
                 label_file = feature_file.replace('features', 'labels')

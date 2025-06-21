@@ -40,7 +40,7 @@ class DataGenerator:
                     x_batch, x = x[:batch_size], x[batch_size:]
                     y_batch, y = y[:batch_size], y[batch_size:]
                     # We return or "yield" batches of data as we go
-                    yield np.transpose(x_batch, (0, 2, 3, 1)), y_batch
+                    yield x_batch, y_batch
 
     def generate(self, batch_size=128, num_classes=19 * 19):
         while True:

@@ -25,9 +25,9 @@ class SimpleEncoder(Encoder):
     def encode(self, game_state):
         board_tensor = np.zeros(self.shape())
         if game_state.next_player == Player.black:
-            board_tensor[8] = 1
+            board_tensor[..., 8] = np.ones((self.board_height, self.board_width))
         else:
-            board_tensor[9] = 1
+            board_tensor[..., 9] = np.ones((self.board_height, self.board_width))
         for r in range(self.board_height):
             for c in range(self.board_width):
                 p = Point(row=r + 1, col=c + 1)
@@ -35,12 +35,12 @@ class SimpleEncoder(Encoder):
 
                 if go_string is None:
                     if game_state.does_move_violate_ko(game_state.next_player, Move.play(p)):
-                        board_tensor[10][r][c] = 1
+                        board_tensor[r][c][10] = 1
                 else:
                     liberty_plane = min(4, go_string.num_liberties) - 1
                     if go_string.color == Player.white:
                         liberty_plane += 4
-                        board_tensor[liberty_plane][r][c] = 1
+                    board_tensor[r][c][liberty_plane] = 1
 
         return board_tensor
 
@@ -58,7 +58,7 @@ class SimpleEncoder(Encoder):
         return self.board_width * self.board_height
 
     def shape(self):
-        return self.num_planes, self.board_height, self.board_width
+        return self.board_height, self.board_width, self.num_planes
 
 
 def create(board_size):

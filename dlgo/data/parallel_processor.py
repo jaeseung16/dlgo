@@ -97,16 +97,27 @@ class GoDataProcessor:
                     else:
                         move = Move.pass_turn()
                     if first_move_done and point is not None:
-                        features[counter] = self.encoder.encode(game_state)
-                        labels[counter] = self.encoder.encode_point(point)
+                        encoded_features = self.encoder.encode(game_state)
+                        features[counter] = encoded_features
+                        encoded_point = self.encoder.encode_point(point)
+                        labels[counter] = encoded_point
+
+                        #print("counter={}, encoded_features={}, features={}".format(counter, np.count_nonzero(encoded_features[..., 8]), np.count_nonzero(features[counter, ..., 8])))
+
+                        #print("counter={}, encoded_features={}, features={}".format(counter, np.count_nonzero(encoded_features), np.count_nonzero(features[counter])))
+                        #print("counter={}, point={}, label={}".format(counter, encoded_point, labels[counter]))
                         counter += 1
+
                     game_state = game_state.apply_move(move)
                     first_move_done = True
 
         print("zip_file_name={}: counter={}".format(zip_file_name, counter))
 
-        feature_file_base = self.data_dir + '/' + data_file_name + '_features_%d'
-        label_file_base = self.data_dir + '/' + data_file_name + '_labels_%d'
+        feature_file_base = data_dir + '/' + data_file_name + '_features_%d'
+        label_file_base = data_dir + '/' + data_file_name + '_labels_%d'
+
+        features = features[:counter, ...]
+        labels = labels[:counter]
 
         chunk = 0
         # Due to files with large content, split up after chunksize
@@ -144,8 +155,8 @@ class GoDataProcessor:
         features = np.concatenate(feature_list, axis=0)
         labels = np.concatenate(label_list, axis=0)
 
-        feature_file = self.data_dir + '/' + name
-        label_file = self.data_dir + '/' + name
+        feature_file = self.data_dir + '/' + name + '_features'
+        label_file = self.data_dir + '/' + name + '_labels'
 
         np.save(feature_file, features)
         np.save(label_file, labels)
@@ -189,9 +200,10 @@ class GoDataProcessor:
             base_name = zip_name.replace('.tar.gz', '')
             data_file_name = base_name + data_type
             if not os.path.isfile(self.data_dir + '/' + data_file_name):
-                zips_to_process.append((self.__class__, self.encoder_string, zip_name, data_file_name, indices_by_zip_name[zip_name]))
+                zips_to_process.append((self.__class__, self.encoder_string, self.data_dir, zip_name, data_file_name, indices_by_zip_name[zip_name]))
 
         cores = multiprocessing.cpu_count()
+        print("multiprocessing.cpu_count()={} / # of cores={}".format(multiprocessing.cpu_count(), cores))
         if multiprocessing.get_start_method(allow_none=True) is None:
             multiprocessing.set_start_method('fork')
         pool = multiprocessing.Pool(processes=cores)

@@ -31,6 +31,16 @@ def is_valid_property_identifier(s):
     """
     return bool(_propident_re.search(s))
 
+def is_valid_property_value(s):
+    """Check whether 's' is a well-formed PropValue.
+
+    s -- 8-bit string
+
+    This accepts the same values as the tokeniser: any string that doesn't contain an unescaped ] or end with and unescaped \ .
+
+    """
+    return bool(_propvalue_re.search(s))
+
 def tokenise(s, start_position=0):
     """Tokenise a string containing SGF data.
 

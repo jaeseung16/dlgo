@@ -106,7 +106,7 @@ def serialise_none(b, context=None):
 def interpret_number(s, context=None):
     """Convert a raw Number value to the integer it represents.
 
-    This is a little more lenient than the SGF spec: it permits leading and traling spaces, and spaces between the sign and the nuerals.
+    This is a little more lenient than the SGF spec: it permits leading and trailing spaces, and spaces between the sign and the nuerals.
 
     """
     return int(s, 10)
@@ -592,7 +592,7 @@ class Presenter(_Context):
       size     -- int
       encoding -- string (normalised form)
 
-    See the _property_types_by_ident table above for a list of properties initially known, and thier types.
+    See the _property_types_by_ident table above for a list of properties initially known, and their types.
 
     Initially, treats unknown (private) properties as if they had type Text.
 
@@ -626,7 +626,7 @@ class Presenter(_Context):
     def set_private_property_type(self, property_type):
         """Specify the Property_type to use for unknown properties.
 
-        Pass property_type = None to make unknown properties rais an error.
+        Pass property_type = None to make unknown properties raise an error.
 
         """
         self.default_property_type = property_type

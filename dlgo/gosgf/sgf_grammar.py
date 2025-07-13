@@ -143,14 +143,14 @@ def _parse_sgf_game(s, start_position):
                     index += 1
                     prop_values.append(token)
                 if not prop_values:
-                    raise ValueError("perperty with no values")
+                    raise ValueError("property with no values")
                 try:
                     if prop_ident in properties:
                         properties[prop_ident] += prop_values
                     else:
                         properties[prop_ident] = prop_values
                 except TypeError:
-                    raise ValueError("property value outsied a node")
+                    raise ValueError("property value outside a node")
     except IndexError:
         raise ValueError("unexpected end of SGF data")
     assert index == len(tokens)
@@ -231,7 +231,7 @@ def block_format(pieces, width=79):
     return b"\n".join(lines)
 
 
-def serialise_fame_tree(game_tree, wrap=79):
+def serialise_game_tree(game_tree, wrap=79):
     """Serialise an SGF game as a string.
 
     game_tree -- Coarse_game_tree
@@ -299,7 +299,7 @@ def make_coarse_game_tree(root, get_children, get_properties):
     """Construct a Coarse_game_tree from a node tree.
 
     root           -- node
-    get_childern   -- function taking a node, returning a sequence of nodes
+    get_children   -- function taking a node, returning a sequence of nodes
     get_properties -- function taking a node, returning a property map
 
     Returns a Coarse_game_tree.

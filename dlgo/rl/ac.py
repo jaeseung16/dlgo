@@ -1,6 +1,6 @@
 import numpy as np
 
-from keras.optimizer import SGD
+from keras.optimizers import SGD
 
 from .. import encoders
 from .. import goboard

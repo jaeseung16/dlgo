@@ -4,7 +4,7 @@ __all__ = [
     'ExperienceCollector',
     'ExperienceBuffer',
     'combine_experience',
-    'load_experince',
+    'load_experience',
 ]
 
 
@@ -59,12 +59,12 @@ class ExperienceBuffer(object):
 
 
 def combine_experience(collectors):
-    combined_stats = np.concatenate([np.array(c.stats) for c in collectors])
+    combined_states = np.concatenate([np.array(c.states) for c in collectors])
     combined_actions = np.concatenate([np.array(c.actions) for c in collectors])
     combined_rewards = np.concatenate([np.array(c.rewards) for c in collectors])
     combined_advantages = np.concatenate([np.array(c.advantages) for c in collectors])
 
-    return ExperienceBuffer(combined_stats, combined_actions, combined_rewards, combined_advantages)
+    return ExperienceBuffer(combined_states, combined_actions, combined_rewards, combined_advantages)
 
 
 def load_experience(h5file):

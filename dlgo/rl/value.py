@@ -1,6 +1,6 @@
 import numpy as np
 
-from keras.optimizer import SGD
+from keras.optimizers import SGD
 
 from .. import encoders
 from .. import goboard
@@ -110,7 +110,7 @@ class ValueAgent(Agent):
         return {'value': self.last_state_value}
 
 
-def load_q_agent(h5file):
+def load_value_agent(h5file):
     model = kerasutil.load_model_from_hdf5_group(h5file['model'])
     encoder_name = h5file['encoder'].attrs['name']
     if not isinstance(encoder_name, str):

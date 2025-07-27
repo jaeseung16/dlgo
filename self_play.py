@@ -77,6 +77,8 @@ def main():
     global BOARD_SIZE
     BOARD_SIZE = args.board_size
 
+    print("Loading agents: {}".format(agent_filename))
+
     agent1 = agent.load_policy_agent(h5py.File(agent_filename))
     agent2 = agent.load_policy_agent(h5py.File(agent_filename))
     collector1 = rl.ExperienceCollector()
@@ -90,6 +92,7 @@ def main():
         collector2.begin_episode()
 
         game_record = simulate_game(agent1, agent2)
+        ##print("game_record={}".format(game_record))
         if game_record.winner == Player.black:
             collector1.complete_episode(reward=1)
             collector2.complete_episode(reward=-1)
@@ -98,6 +101,7 @@ def main():
             collector2.complete_episode(reward=1)
 
     experience = rl.combine_experience([collector1, collector2])
+    ##print("experience={}".format(experience.rewards))
     with h5py.File(experience_filename, 'w') as experience_outf:
         experience.serialize(experience_outf)
 

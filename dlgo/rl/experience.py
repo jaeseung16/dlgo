@@ -19,26 +19,29 @@ class ExperienceCollector(object):
         self._current_episode_estimated_values = []
 
     def begin_episode(self):
-        self._current_spisode_states = []
+        self._current_episode_states = []
         self._current_episode_actions = []
         self._current_episode_estimated_values = []
 
     def record_decision(self, state, action, estimated_value=0):
-        self._current_spisode_states.append(state)
+        self._current_episode_states.append(state)
         self._current_episode_actions.append(action)
         self._current_episode_estimated_values.append(estimated_value)
 
     def complete_episode(self, reward):
         num_states = len(self._current_episode_states)
-        self.states += self._current_spisode_states
+        self.states += self._current_episode_states
         self.actions += self._current_episode_actions
         self.rewards += [reward for _ in range(num_states)]
+
+        ##print("num_states={}".format(num_states))
+        ##print("self._current_episode_estimated_values={}".format(len(self._current_episode_estimated_values)))
 
         for i in range(num_states):
             advantage = reward - self._current_episode_estimated_values[i]
             self.advantages.append(advantage)
 
-        self._current_spisode_states = []
+        self._current_episode_states = []
         self._current_episode_actions = []
         self._current_episode_estimated_values = []
 

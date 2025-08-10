@@ -4,6 +4,8 @@ from collections import namedtuple
 
 import h5py
 
+from scipy.stats import binomtest
+
 from dlgo import agent
 from dlgo import scoring
 from dlgo.goboard_fast import GameState, Player, Point
@@ -74,7 +76,7 @@ def main():
     args = parser.parse_args()
 
     agent1 = agent.load_policy_agent(h5py.File(args.agent1))
-    agent2 = agent.load_policy_agent(h5py.File(args.agnet2))
+    agent2 = agent.load_policy_agent(h5py.File(args.agent2))
 
     wins = 0
     losses = 0
@@ -92,6 +94,7 @@ def main():
             losses += 1
         color1 = color1.other
     print('Agent 1 record: %d/%d' % (wins, wins + losses))
+    print('Binomial test: %d' % (binomtest(wins, wins + losses).pvalue))
 
 
 if __name__ == '__main__':

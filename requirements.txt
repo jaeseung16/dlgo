@@ -10,3 +10,4 @@ tensorflow
 tensorflow-metal
 matplotlib
 torch
+scipy

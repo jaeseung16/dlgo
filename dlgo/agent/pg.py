@@ -54,7 +54,7 @@ class PolicyAgent(Agent):
             move_probs = np.ones(num_moves) / num_moves
         else:
             # Follow our current policy.
-            move_probs = self._model.predict(X)[0]
+            move_probs = self._model.predict(X, verbose=0)[0]
 
         # Prevent move probs from getting stuck at 0 or 1.
         eps = 1e-5

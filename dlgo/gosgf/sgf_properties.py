@@ -3,7 +3,7 @@ from math import isinf, isnan
 
 import six
 
-from dlgo.gosgf import sgf_grammar
+import sgf_grammar
 from six.moves import range
 
 
@@ -22,7 +22,8 @@ def normalise_charset_name(s):
     """
     if not isinstance(s, six.text_type):
         s = s.decode('ascii')
-        return (codecs.lookup(s).name.replace("_", "-").upper().replace("ISO8859", "ISO-8859"))
+    return (codecs.lookup(s).name.replace("_", "-").upper()
+            .replace("ISO8859", "ISO-8859"))
 
 
 def interpret_go_point(s, size):
@@ -207,7 +208,7 @@ def serialise_colour(colour, context=None):
 
 
 def _transcode(s, encoding):
-    """Common implmentation for interpret_text and interpret_simpletext."""
+    """Common implementation for interpret_text and interpret_simpletext."""
     # If encoding is UTF-8, we don't need to transcode, but we still want to report an error if it's not properly encoded.
     u = s.decode(encoding)
     if encoding == "UTF-8":
@@ -631,7 +632,7 @@ class Presenter(_Context):
         """
         self.default_property_type = property_type
 
-    def _get_effective_propertry_type(self, identifier):
+    def _get_effective_property_type(self, identifier):
         try:
             return self.property_type_by_ident[identifier]
         except KeyError:
@@ -677,7 +678,7 @@ class Presenter(_Context):
         Doesn't enforce range restrictions on values with type Number.
 
         """
-        return self.interpret_as_type(self._get_effective_propertry_type(identifier), raw_values)
+        return self.interpret_as_type(self._get_effective_property_type(identifier), raw_values)
 
     def serialise_as_type(self, property_type, value):
         """Variant of serialise() for explicitly specified type.
@@ -713,4 +714,4 @@ class Presenter(_Context):
         In general, the serialise_... functions try not to produce an invalid result, but do not try to prevent garbage input happening to produce a valid result.
 
         """
-        return self.serialise_as_type(self._get_effective_propertry_type(identifier), value)
+        return self.serialise_as_type(self._get_effective_property_type(identifier), value)

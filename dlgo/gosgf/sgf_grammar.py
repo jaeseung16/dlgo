@@ -314,7 +314,7 @@ def make_coarse_game_tree(root, get_children, get_properties):
 
     Returns a Coarse_game_tree.
 
-    Walks the node tree based at 'root' using get_childern(), and uses get_properties() to extract the raw properties.
+    Walks the node tree based at 'root' using get_children(), and uses get_properties() to extract the raw properties.
 
     Make no further assumptions about the node type.
 
@@ -445,7 +445,7 @@ def text_value(s):
                 result.append(chunk)
             is_escaped = False
         elif chunk == b"\\":
-            is_escape = True
+            is_escaped = True
         else:
             result.append(chunk)
     return b"".join(result)

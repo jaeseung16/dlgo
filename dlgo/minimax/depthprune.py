@@ -8,7 +8,7 @@ __all__ = [
 ]
 
 MAX_SCORE = 999999
-MIN_SCOER = -999999
+MIN_SCORE = -999999
 
 
 def reverse_game_result(game_result):
@@ -24,12 +24,12 @@ def best_result(game_state, max_depth, eval_fn):
         if game_state.winner() == game_state.next_player:
             return MAX_SCORE
         else:
-            return MIN_SCOER
+            return MIN_SCORE
 
     if max_depth == 0:
         return eval_fn(game_state)
 
-    best_so_far = MIN_SCOER
+    best_so_far = MIN_SCORE
     for candidate_move in game_state.legal_moves():
         next_state = game_state.apply_move(candidate_move)
         opponent_best_result = best_result(next_state, max_depth - 1, eval_fn)

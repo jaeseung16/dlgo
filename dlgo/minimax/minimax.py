@@ -42,7 +42,7 @@ def best_result(game_state):
 
 
 class MinimaxAgent(Agent):
-    def select_move(selfself, game_state):
+    def select_move(self, game_state):
         winning_moves = []
         draw_moves = []
         losing_moves = []

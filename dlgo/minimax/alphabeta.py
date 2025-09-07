@@ -3,7 +3,9 @@ import random
 from dlgo.agent import Agent
 from dlgo.gotypes import Player
 
-__all__ = ['AlphaBetaAgent']
+__all__ = [
+    'AlphaBetaAgent',
+]
 
 MAX_SCORE = 999999
 MIN_SCORE = -999999
@@ -39,7 +41,7 @@ def alpha_beta_result(game_state, max_depth, best_black, best_white, eval_fn):
                 best_black = best_so_far
             outcome_for_white = -1 * best_so_far
             if outcome_for_white < best_white:
-                return best_white
+                return best_so_far
 
     return best_so_far
 
@@ -76,4 +78,3 @@ class AlphaBetaAgent(Agent):
                 best_moves.append(possible_move)
         # For variety, randomly select among all equally good moves.
         return random.choice(best_moves)
-

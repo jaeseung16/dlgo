@@ -33,11 +33,11 @@ class BetaGoEncoder(Encoder):
 
                 if go_string is None:
                     if game_state.does_move_violate_ko(game_state.next_player, Move.play(p)):
-                        board_tensor[6][r][c] = 1
+                        board_tensor[r][c][6] = 1
                 else:
                     liberty_plane = min(3, go_string.num_liberties) - 1
                     liberty_plane += base_plane[go_string.color]
-                    board_tensor[liberty_plane][r][c] = 1
+                    board_tensor[r][c][liberty_plane] = 1
 
         return board_tensor
 
@@ -56,7 +56,7 @@ class BetaGoEncoder(Encoder):
         return self.board_width * self.board_height
 
     def shape(self):
-        return (self.num_planes, self.board_height, self.board_width)
+        return (self.board_height, self.board_width, self.num_planes)
 
 
 def create(board_size):

@@ -41,5 +41,6 @@ class OnePlaneEncoder(Encoder):
     def shape(self):
         return self.board_height, self.board_width, self.num_planes
 
+
 def create(board_size):
     return OnePlaneEncoder(board_size)

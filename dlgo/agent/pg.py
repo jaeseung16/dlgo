@@ -2,6 +2,7 @@ import numpy as np
 from keras import backend as K
 from keras.optimizers import SGD
 
+# TODO: Need to import from fast implementations?
 from dlgo.agent.base import Agent
 from dlgo.agent.helpers import is_point_an_eye
 from dlgo import encoders
@@ -22,16 +23,17 @@ def normalize(x):
 def prepare_experience_data(experience, board_width, board_height):
     experience_size = experience.actions.shape[0]
     target_vectors = np.zeros((experience_size, board_width * board_height))
-    for i in range(experience_size):
-        action = experience.actions[i]
-        reward = experience.rewards[i]
-        target_vectors[i][action] = reward
+    for index in range(experience_size):
+        action = experience.actions[index]
+        reward = experience.rewards[index]
+        target_vectors[index][action] = reward
     return target_vectors
 
 
 class PolicyAgent(Agent):
     """An agent that uses a deep policy network to select moves."""
     def __init__(self, model, encoder):
+        Agent.__init__(self)
         self._model = model
         self._encoder = encoder
         self._collector = None
@@ -62,7 +64,7 @@ class PolicyAgent(Agent):
         # Re-normalize to get another probability distribution.
         move_probs = move_probs / np.sum(move_probs)
 
-        # Prevent move probs from getting stuck at 0 or 1
+        # Turn the probabilities into a ranked list of moves
         candidates = np.arange(num_moves)
         ranked_moves = np.random.choice(candidates, num_moves, replace=False, p=move_probs)
         for point_idx in ranked_moves:
@@ -82,7 +84,7 @@ class PolicyAgent(Agent):
         h5file.create_group('model')
         kerasutil.save_model_to_hdf5_group(self._model, h5file['model'])
 
-    def train(self, experience, lr=0.0000001, clipnorm=1.0, batch_size=512):
+    def train(self, experience, lr, clipnorm, batch_size):
         self._model.compile(
             loss='categorical_crossentropy',
             optimizer=SGD(learning_rate=lr, clipnorm=clipnorm)

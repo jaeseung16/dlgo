@@ -70,4 +70,4 @@ class SequentialNetwork:
 
     def evaluate(self, test_data):
         test_results = [(np.argmax(self.single_forward(x)), np.argmax(y)) for (x, y) in test_data]
-        return sum(int(x==y) for (x, y) in test_results)
+        return sum(int(x == y) for (x, y) in test_results)

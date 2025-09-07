@@ -1,6 +1,8 @@
 import numpy as np
 from dlgo.nn.load_mnist import load_data
 from dlgo.nn.layers import sigmoid_double
+from matpoltlib import pyplot as plt
+
 
 def average_digit(data, digit):
     filtered_data = [x[0] for x in data if np.argmax(x[1]) == digit]
@@ -11,14 +13,10 @@ def average_digit(data, digit):
 train, test = load_data()
 avg_eight = average_digit(train, 8)
 
-
-
-from matpoltlib import pyplot as plt
-
+# display_digit
 img = (np.reshape(avg_eight, (28, 28)))
 plt.imshow(img)
 plt.show()
-
 
 x_3 = train[2][0]
 x_18 = train[17][0]
@@ -40,13 +38,13 @@ print(predict(x_18, W, b))
 
 def evaluate(data, digit, threshold, W, b):
     total_samples = 1.0 * len(data)
-    correct_predictinos = 0
+    correct_predictions = 0
     for x in data:
         if predict(x[0], W, b) > threshold and np.argmax(x[1]) == digit:
-            correct_predictinos += 1
+            correct_predictions += 1
         if predict(x[0], W, b) <= threshold and np.argmax(x[1]) != digit:
-            correct_predictinos += 1
-    return correct_predictinos / total_samples
+            correct_predictions += 1
+    return correct_predictions / total_samples
 
 
 evaluate(data=train, digit=8, threshold=0.5, W=W, b=b)

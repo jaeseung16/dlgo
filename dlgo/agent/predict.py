@@ -1,5 +1,6 @@
 import numpy as np
 
+# TODO: Need to import from fast implementations?
 from dlgo.agent.base import Agent
 from dlgo.agent.helpers import is_point_an_eye
 from dlgo import encoders

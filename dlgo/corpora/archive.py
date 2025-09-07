@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 __all__ = [
     'SGF',
-    'SGFLocator'
+    'SGFLocator',
     'find_sgfs',
 ]
 
@@ -60,6 +60,7 @@ class SGFLocator(object):
 
 class TarballSGFLocator(SGFLocator):
     def __init__(self, tarball_path, archive_filename):
+        SGFLocator.__init__(self)
         self.tarball_path = tarball_path
         self.archive_filename = archive_filename
 
@@ -73,10 +74,10 @@ class TarballSGFLocator(SGFLocator):
 def find_sgfs(path):
     """Find all SGFs in a directory or archive"""
     print(('Examining %s...' % (path, )))
-    if os.path_isdir(path):
+    if os.path.isdir(path):
         return _walk_dir(path)
     if tarfile.is_tarfile(path):
-        return _wallk_tarball(path)
+        return _walk_tarball(path)
 
 
 def _walk_dir(path):

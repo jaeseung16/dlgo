@@ -1,6 +1,7 @@
 from keras.layers import Dense, Activation, Flatten
 from keras.layers import Conv2D, ZeroPadding2D, Input
 
+
 def layers(input_shape):
     return [
         Input(shape=input_shape),

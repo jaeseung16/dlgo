@@ -48,7 +48,7 @@ class GameResult(namedtuple('GameResult', 'b w komi')):
 def evaluate_territory(board):
 
     status = {}
-    for r in range(1, board.num_rows +1):
+    for r in range(1, board.num_rows + 1):
         for c in range(1, board.num_cols + 1):
             p = Point(row=r, col=c)
             if p in status:

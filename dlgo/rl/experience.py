@@ -34,8 +34,8 @@ class ExperienceCollector(object):
         self.actions += self._current_episode_actions
         self.rewards += [reward for _ in range(num_states)]
 
-        ##print("num_states={}".format(num_states))
-        ##print("self._current_episode_estimated_values={}".format(len(self._current_episode_estimated_values)))
+        # print("num_states={}".format(num_states))
+        # print("self._current_episode_estimated_values={}".format(len(self._current_episode_estimated_values)))
 
         for i in range(num_states):
             advantage = reward - self._current_episode_estimated_values[i]

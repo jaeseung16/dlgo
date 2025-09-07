@@ -7,11 +7,15 @@ from .. import goboard
 from .. import kerasutil
 from ..agent import Agent
 
-__all__ = ['ACAgent', 'load_passing_ac_agent']
+__all__ = [
+    'ACAgent',
+    'load_passing_ac_agent',
+]
 
 
 class ACAgent(Agent):
     def __init__(self, model, encoder):
+        Agent.__init__(self)
         self.model = model
         self.encoder = encoder
         self.collector = None
@@ -53,7 +57,7 @@ class ACAgent(Agent):
             if not game_state.is_valid_move(true_move):
                 true_move = goboard.Move.pass_turn()
             if self.collector is not None:
-                self.collector.record_decision(state=board_tensor, action=point_idx, setimated_value=estimated_value)
+                self.collector.record_decision(state=board_tensor, action=point_idx, estimated_value=estimated_value)
             return true_move
         # No legal, non-self-destructive moves less.
         return goboard.Move.pass_turn()

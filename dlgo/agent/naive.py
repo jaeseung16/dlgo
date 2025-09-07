@@ -5,6 +5,9 @@ from dlgo.goboard_slow import Move
 from dlgo.gotypes import Point
 
 
+__all__ = ['RandomBot']
+
+
 class RandomBot(Agent):
     def select_move(self, game_state):
         """Choose a random valid move that perserves our own eyes."""

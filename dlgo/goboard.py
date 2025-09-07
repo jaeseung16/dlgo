@@ -3,6 +3,16 @@ from dlgo.gotypes import Player, Point
 from dlgo.scoring import compute_game_result
 from dlgo import zobrist
 
+__all__ = [
+    'Board',
+    'GameState',
+    'Move',
+]
+
+
+class IllegalMoveError(Exception):
+    pass
+
 
 class Move:
     def __init__(self, point=None, is_pass=False, is_resign=False):
@@ -23,6 +33,13 @@ class Move:
     @classmethod
     def resign(cls):
         return Move(is_resign=True)
+
+    def __str__(self):
+        if self.is_pass:
+            return 'pass'
+        if self.is_resign:
+            return 'resign'
+        return '(r %d, c %d)' % (self.point.row, self.point.col)
 
 
 class GoString:
@@ -53,6 +70,9 @@ class GoString:
             self.stones == other.color and \
             self.stones == other.stones and \
             self.liberties == other.liberties
+
+    def __deepcopy__(self, memodict={}):
+        return GoString(self.color, self.stones, copy.deepcopy(self.liberties))
 
 
 class Board:
@@ -100,7 +120,6 @@ class Board:
             if other_color_string.num_liberties == 0:
                 self._remove_string(other_color_string)
 
-
     def is_on_grid(self, point):
         return 1 <= point.row <= self.num_rows and 1 <= point.col <= self.num_cols
 
@@ -134,6 +153,18 @@ class Board:
 
     def zobrist_hash(self):
         return self._hash
+
+    def __eq__(self, other):
+        return (isinstance(other, Board) and
+                self.num_rows == other.num_rows and
+                self.num_cols == other.num_cols and
+                self._hash() == other._hash())
+
+    def __deepcopy__(self, memodict={}):
+        copied = Board(self.num_rows, self.num_cols)
+        copied._grid = copy.copy(self._grid)
+        copied._hash = self._hash
+        return copied
 
 
 class GameState:

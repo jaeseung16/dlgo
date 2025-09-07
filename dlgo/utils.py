@@ -37,6 +37,7 @@ def point_from_coords(coords):
     row = int(coords[1:])
     return gotypes.Point(row=row, col=col)
 
+
 def coords_from_point(point):
     return '%s%d' % (COLS[point.col - 1], point.row)
 

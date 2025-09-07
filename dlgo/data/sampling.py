@@ -1,10 +1,7 @@
 import os
 import random
 
-from matplotlib.style.core import available
-
 from dlgo.data.index_processor import KGSIndex
-from six.moves import range
 
 
 class Sampler:

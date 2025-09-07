@@ -8,7 +8,6 @@ import numpy as np
 import multiprocessing
 import sys
 from keras.utils import to_categorical
-from numpy.random import SFC64
 
 from dlgo.gosgf import Sgf_game
 from dlgo.goboard_fast import Board, GameState, Move
@@ -63,7 +62,7 @@ class GoDataProcessor:
         return tar_file
 
     def process_zip(self, data_dir, zip_file_name, data_file_name, game_list):
-        #print("data_dir={}, zip_file_name={}".format(data_dir, zip_file_name))
+        # print("data_dir={}, zip_file_name={}".format(data_dir, zip_file_name))
         tar_file = self.unzip_data(data_dir, zip_file_name)
         zip_file = tarfile.open(data_dir + '/' + tar_file)
         name_list = zip_file.getnames()
@@ -102,10 +101,10 @@ class GoDataProcessor:
                         encoded_point = self.encoder.encode_point(point)
                         labels[counter] = encoded_point
 
-                        #print("counter={}, encoded_features={}, features={}".format(counter, np.count_nonzero(encoded_features[..., 8]), np.count_nonzero(features[counter, ..., 8])))
+                        # print("counter={}, encoded_features={}, features={}".format(counter, np.count_nonzero(encoded_features[..., 8]), np.count_nonzero(features[counter, ..., 8])))
 
-                        #print("counter={}, encoded_features={}, features={}".format(counter, np.count_nonzero(encoded_features), np.count_nonzero(features[counter])))
-                        #print("counter={}, point={}, label={}".format(counter, encoded_point, labels[counter]))
+                        # print("counter={}, encoded_features={}, features={}".format(counter, np.count_nonzero(encoded_features), np.count_nonzero(features[counter])))
+                        # print("counter={}, point={}, label={}".format(counter, encoded_point, labels[counter]))
                         counter += 1
 
                     game_state = game_state.apply_move(move)
@@ -190,13 +189,13 @@ class GoDataProcessor:
                 indices_by_zip_name[filename] = []
             indices_by_zip_name[filename].append(index)
 
-        #print(indices_by_zip_name)
-        #print(zip_names)
+        # print(indices_by_zip_name)
+        # print(zip_names)
         zips_to_process = []
         for zip_name in zip_names:
-            #year = zip_name.split('-')
-            #if not year == '2015' or not year == '2016':
-            #    continue
+            # year = zip_name.split('-')
+            # if not year == '2015' or not year == '2016':
+            #     continue
             base_name = zip_name.replace('.tar.gz', '')
             data_file_name = base_name + data_type
             if not os.path.isfile(self.data_dir + '/' + data_file_name):
@@ -235,6 +234,7 @@ class GoDataProcessor:
             else:
                 raise ValueError(name + ' is not a valid sgf')
         return total_examples
+
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()

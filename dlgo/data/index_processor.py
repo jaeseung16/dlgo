@@ -1,7 +1,6 @@
 import os
 import sys
 import multiprocessing
-import six
 from urllib.request import urlopen, urlretrieve
 
 
@@ -14,7 +13,7 @@ def worker(url_and_target):
         print('>>> Exiting child process')
 
 
-class KGSIndex:
+class KGSIndex(object):
     def __init__(self, kgs_url='http://u-go.net/gamerecords/', index_page='kgs_index.html', data_directory='data'):
         """Create an index of zip files containing SGF data of actual Go Games on KGS.
 
@@ -31,7 +30,7 @@ class KGSIndex:
         self.urls = []
         self.load_index()
         print("KGSIndex initialized: # of file_info={}".format(len(self.file_info)))
-        #print("file_info={}".format(self.file_info))
+        # print("file_info={}".format(self.file_info))
 
     def download_files(self):
         """Download zip files by distributing work on all available CPUs"""
@@ -72,7 +71,7 @@ class KGSIndex:
         else:
             print('>>> Downloading index page')
             fp = urlopen(self.kgs_url)
-            data = six.text_type(fp.read())
+            data = str(fp.read())
             fp.close()
             index_contents = data
             index_file = open(self.index_page, 'w')
@@ -84,7 +83,7 @@ class KGSIndex:
         """Create the actual index representation from the previously downloaded or cached html."""
         print("loading index")
         index_contents = self.create_index_page()
-        split_page =[item for item in index_contents.split('<a href="') if item.startswith("https://")]
+        split_page = [item for item in index_contents.split('<a href="') if item.startswith("https://")]
         for item in split_page:
             download_url = item.split('">Download')[0]
             if download_url.endswith('.tar.gz'):
@@ -92,7 +91,7 @@ class KGSIndex:
         for url in self.urls:
             filename = os.path.basename(url)
             split_file_name = filename.split('-')
-            num_games = int(split_file_name[len(split_file_name) -2])
+            num_games = int(split_file_name[len(split_file_name) - 2])
             # print(filename + ' ' + str(num_games))
             self.file_info.append({'url': url, 'filename': filename, 'num_games': num_games})
 

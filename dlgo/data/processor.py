@@ -110,7 +110,7 @@ class GoDataProcessor:
                             # ... and the next move as label for the features.
                             labels[counter] = self.encoder.encode_point(point)
                             counter += 1
-                        # Afterwards the move is applied to the board and we proceed with the next one.
+                        # Afterward the move is applied to the board and we proceed with the next one.
                         game_state = game_state.apply_move(move)
                         first_move_done = True
 

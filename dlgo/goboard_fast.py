@@ -87,7 +87,6 @@ class GoString():
         return GoString(self.color, self.stones, copy.deepcopy(self.liberties))
 
 
-
 class Board():
     def __init__(self, num_rows, num_cols):
         self.num_rows = num_rows
@@ -104,7 +103,6 @@ class Board():
         self.neighbor_table = neighbor_tables[dim]
         self.corner_table = corner_tables[dim]
         self.move_ages = MoveAge(self)
-
 
     def neighbors(self, point):
         return self.neighbor_table[point]
@@ -234,10 +232,8 @@ class Board():
         copied._hash = self._hash
         return copied
 
-
     def zobrist_hash(self):
         return self._hash
-
 
 
 class Move():
@@ -271,7 +267,8 @@ class Move():
         return hash((self.is_play, self.is_pass, self.is_resign, self.point))
 
     def __eq__(self, other):
-        return (self.is_play, self.is_pass, self.is_resign, self.point) == (other.is_play, other.is_pass, other.is_resign, other.point)
+        return ((self.is_play, self.is_pass, self.is_resign, self.point)
+                == (other.is_play, other.is_pass, other.is_resign, other.point))
 
 
 class GameState():

@@ -8,16 +8,19 @@ from .. import kerasutil
 from ..agent import Agent
 from ..agent.helpers import is_point_an_eye
 
-__all__ = ['QAgent', 'load_q_agent']
+__all__ = [
+    'QAgent',
+    'load_q_agent',
+]
 
 
 class QAgent(Agent):
-    def __init__(self, model, encoder, policy='eps-greedy'):
+    def __init__(self, model, encoder):
+        Agent.__init__(self)
         self.model = model
         self.encoder = encoder
         self.collector = None
         self.temperature = 0.0
-        self.policy = policy
 
         self.last_state_value = 0
 
@@ -50,17 +53,15 @@ class QAgent(Agent):
         values = self.model.predict([board_tensors, move_vectors])
         values = values.reshape(len(moves))
 
-        if self.policy == 'eps-greedy':
-            ranked_moves = self.rank_moves_eps_greedy(values)
-        elif self.policy == 'weighted':
-            ranked_moves = self.rank_moves_weighted(values)
+        ranked_moves = self.rank_moves_eps_greedy(values)
 
         for move_idx in ranked_moves:
             point = self.encoder.decode_point_index(moves[move_idx])
             if not is_point_an_eye(game_state.board, point, game_state.next_player):
                 if self.collector is not None:
                     self.collector.record_decision(state=board_tensor, action=moves[move_idx])
-                self.last_move_value = float(values[move_idx])
+                self.last_state_value = float(values[move_idx])
+                return goboard.Move.play(point)
         # No legal, non-self-destructive moves less.
         return goboard.Move.pass_turn()
 
@@ -72,14 +73,8 @@ class QAgent(Agent):
         # Return them in best-to-worst order.
         return ranked_moves[::-1]
 
-    def rank_moves_weighted(self, values):
-        p = values / np.sum(values)
-        p = np.power(p, 1.0 / self.temperature)
-        p = p / np.sum(p)
-        return np.random.choice(np.arange(0, len(values)), size=len(values), p=p, replace=False)
-
     def train(self, experience, lr=0.1, batch_size=128):
-        opt = SGD(lr=lr, clipvalue=0.2)
+        opt = SGD(lr=lr)
         self.model.compile(optimizer=opt, loss='mse')
 
         n = experience.states.shape[0]
@@ -90,7 +85,7 @@ class QAgent(Agent):
             action = experience.actions[i]
             reward = experience.rewards[i]
             actions[i][action] = 1
-            y[i] = 1 if reward > 0 else 0
+            y[i] = reward
 
         self.model.fit([experience.states, actions], y, batch_size=batch_size, epochs=1)
 

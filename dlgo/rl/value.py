@@ -8,18 +8,22 @@ from .. import kerasutil
 from ..agent import Agent
 from ..agent.helpers import is_point_an_eye
 
-__all__ = ['ValueAgent', 'load_value_agent']
+__all__ = [
+    'ValueAgent',
+    'load_value_agent',
+]
 
 
 class ValueAgent(Agent):
     def __init__(self, model, encoder, policy='eps-greedy'):
+        Agent.__init__(self)
         self.model = model
         self.encoder = encoder
         self.collector = None
         self.temperature = 0.0
         self.policy = policy
 
-        self.last_state_value = 0
+        self.last_move_value = 0
 
     def set_temperature(self, temperature):
         self.temperature = temperature
@@ -37,11 +41,12 @@ class ValueAgent(Agent):
         # Loop over all legal moves.
         moves = []
         board_tensors = []
+        board_tensor = np.zeros(self.encoder.shape())
         for move in game_state.legal_moves():
             if not move.is_play:
                 continue
             next_state = game_state.apply_move(move)
-            board_tensor = self.encoder.encode_point(next_state)
+            board_tensor = self.encoder.encode(next_state)
             moves.append(move)
             board_tensors.append(board_tensor)
         if not moves:
@@ -57,10 +62,11 @@ class ValueAgent(Agent):
         # Values from our point of view
         values = 1 - opp_values
 
+        ranked_moves = []
         if self.policy == 'eps-greedy':
             ranked_moves = self.rank_moves_eps_greedy(values)
         elif self.policy == 'weighted':
-            ranked_moves = self.rank_moves.weighted(values)
+            ranked_moves = self.rank_moves_weighted(values)
 
         for move_idx in ranked_moves:
             move = moves[move_idx]
@@ -90,7 +96,7 @@ class ValueAgent(Agent):
         self.model.compile(optimizer=opt, loss='mse')
 
         n = experience.states.shape[0]
-        #num_moves = self.encoder.num_points()
+        # num_moves = self.encoder.num_points()
         y = np.zeros((n,))
         for i in range(n):
             reward = experience.rewards[i]
@@ -107,7 +113,7 @@ class ValueAgent(Agent):
         kerasutil.save_model_to_hdf5_group(self.model, h5file['model'])
 
     def diagnostics(self):
-        return {'value': self.last_state_value}
+        return {'value': self.last_move_value}
 
 
 def load_value_agent(h5file):

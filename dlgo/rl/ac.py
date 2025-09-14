@@ -1,3 +1,4 @@
+import keras.src.losses
 import numpy as np
 
 from keras.optimizers import SGD
@@ -29,10 +30,10 @@ class ACAgent(Agent):
     def select_move(self, game_state):
         num_moves = self.encoder.board_width * self.encoder.board_height
 
-        board_tensor = self.encoder.encoder(game_state)
+        board_tensor = self.encoder.encode(game_state)
         X = np.array([board_tensor])
 
-        actions, values = self.model.predict(X)
+        actions, values = self.model.predict(X, verbose=0)
         move_probs = actions[0]
         estimated_value = values[0][0]
         self.last_state_value = float(estimated_value)
@@ -46,18 +47,19 @@ class ACAgent(Agent):
         ranked_moves = np.random.choice(candidates, num_moves, replace=False, p=move_probs)
         for point_idx in ranked_moves:
             point = self.encoder.decode_point_index(point_idx)
-            move_is_valid = game_state.is_valid_move(point)
+            move = goboard.Move.play(point)
+            move_is_valid = game_state.is_valid_move(move)
             fills_own_eye = is_point_an_eye(game_state.board, point, game_state.next_player)
             if move_is_valid and (not fills_own_eye):
                 if self.collector is not None:
-                    self.collector.record_decisino(state=board_tensor, action=point_idx, estimated_value=estimated_value)
+                    self.collector.record_decision(state=board_tensor, action=point_idx, estimated_value=estimated_value)
                 return goboard.Move.play(point)
         # No legal, non-self-destructive moves less.
         return goboard.Move.pass_turn()
 
     def train(self, experience, lr=0.1, batch_size=128):
-        opt = SGD(lr=lr)
-        self.model.compile(optimizer=opt, loss=['categorical_crossentropy', 'mse'], loss_weights=[1.0, 0.5])
+        opt = SGD(learning_rate=lr)
+        self.model.compile(optimizer=opt, loss=['categorical_crossentropy', keras.src.losses.MeanSquaredError()], loss_weights=[1.0, 0.5])
 
         n = experience.states.shape[0]
         num_moves = self.encoder.num_points()

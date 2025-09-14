@@ -32,7 +32,7 @@ class ACAgent(Agent):
     def select_move(self, game_state):
         num_moves = self.encoder.board_width * self.encoder.board_height
 
-        board_tensor = self.encoder.encoder(game_state)
+        board_tensor = self.encoder.encode(game_state)
         X = np.array([board_tensor])
 
         actions, values = self.model.predict(X)

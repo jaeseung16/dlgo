@@ -7,7 +7,7 @@ from dlgo import rl
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--learning-agent', requried=True)
+    parser.add_argument('--learning-agent', required=True)
     parser.add_argument('--agent-out', required=True)
     parser.add_argument('--lr', type=float, default=0.0001)
     parser.add_argument('--bs', type=int, default=512)

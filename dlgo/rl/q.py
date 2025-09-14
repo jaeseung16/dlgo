@@ -1,3 +1,4 @@
+import keras.src.losses
 import numpy as np
 
 from keras.optimizers import SGD
@@ -31,7 +32,7 @@ class QAgent(Agent):
         self.collector = collector
 
     def select_move(self, game_state):
-        board_tensor = self.encoder.encoder(game_state)
+        board_tensor = self.encoder.encode(game_state)
 
         # Loop over all legal moves.
         moves = []
@@ -50,7 +51,7 @@ class QAgent(Agent):
         for i, move in enumerate(moves):
             move_vectors[i][move] = 1
 
-        values = self.model.predict([board_tensors, move_vectors])
+        values = self.model.predict([board_tensors, move_vectors], verbose=0)
         values = values.reshape(len(moves))
 
         ranked_moves = self.rank_moves_eps_greedy(values)
@@ -74,8 +75,8 @@ class QAgent(Agent):
         return ranked_moves[::-1]
 
     def train(self, experience, lr=0.1, batch_size=128):
-        opt = SGD(lr=lr)
-        self.model.compile(optimizer=opt, loss='mse')
+        opt = SGD(learning_rate=lr)
+        self.model.compile(optimizer=opt, loss=keras.losses.MeanSquaredError())
 
         n = experience.states.shape[0]
         num_moves = self.encoder.num_points()

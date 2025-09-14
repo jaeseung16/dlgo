@@ -36,7 +36,7 @@ def main():
     model = Model(inputs=[board_input, action_input], outputs=value_output)
 
     new_agent = rl.QAgent(model, encoder)
-    with h5py.File(args.output_fiole, 'w') as outf:
+    with h5py.File(args.output_file, 'w') as outf:
         new_agent.serialize(outf)
 
 

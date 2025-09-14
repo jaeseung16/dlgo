@@ -38,10 +38,10 @@ class SimpleEncoder(Encoder):
                         board_tensor[r][c][10] = 1
                 else:
                     # if go_string.num_liberties < 1:
-                    print("nextPlayer={}, row={}, col={}, num_liberties={}, string_color={} stones={} liberties={}"
-                          .format(game_state.next_player, r, c, go_string.num_liberties,
-                                  go_string.color, go_string.stones, go_string.liberties)
-                          )
+                    # print("nextPlayer={}, row={}, col={}, num_liberties={}, string_color={} stones={} liberties={}"
+                    #       .format(game_state.next_player, r, c, go_string.num_liberties,
+                    #               go_string.color, go_string.stones, go_string.liberties)
+                    #       )
                     liberty_plane = min(4, go_string.num_liberties) - 1
                     if go_string.color == Player.white:
                         liberty_plane += 4

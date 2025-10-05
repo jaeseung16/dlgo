@@ -3,7 +3,7 @@ from math import isinf, isnan
 
 import six
 
-import sgf_grammar
+from dlgo.gosgf import sgf_grammar
 from six.moves import range
 
 

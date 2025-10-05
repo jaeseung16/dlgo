@@ -1,12 +1,13 @@
 import numpy as np
 
 from keras.optimizers import SGD
+from keras.losses import MeanSquaredError
 
-from .. import encoders
-from .. import goboard
-from .. import kerasutil
-from ..agent import Agent
-from ..agent.helpers import is_point_an_eye
+from dlgo import encoders
+from dlgo import goboard
+from dlgo import kerasutil
+from dlgo.agent import Agent
+from dlgo.agent.helpers import is_point_an_eye
 
 __all__ = [
     'ValueAgent',
@@ -24,6 +25,11 @@ class ValueAgent(Agent):
         self.policy = policy
 
         self.last_move_value = 0
+
+    def predict(self, game_state):
+        encoded_state = self.encoder.encode(game_state)
+        input_tensor = np.array([encoded_state])
+        return self.model.predict(input_tensor, verbose=0)[0]
 
     def set_temperature(self, temperature):
         self.temperature = temperature
@@ -92,8 +98,8 @@ class ValueAgent(Agent):
         return np.random.choice(np.arange(0, len(values)), size=len(values), p=p, replace=False)
 
     def train(self, experience, lr=0.1, batch_size=128):
-        opt = SGD(lr=lr, clipvalue=0.2)
-        self.model.compile(optimizer=opt, loss='mse')
+        opt = SGD(learning_rate=lr, clipvalue=0.2)
+        self.model.compile(optimizer=opt, loss=MeanSquaredError())
 
         n = experience.states.shape[0]
         # num_moves = self.encoder.num_points()

@@ -12,8 +12,14 @@ from dlgo import kerasutil
 __all__ = [
     'PolicyAgent',
     'load_policy_agent',
+    'policy_gradient_loss'
 ]
 
+
+def policy_gradient_loss(y_true, y_pred):
+    clip_pred = K.clip(y_pred, K.epsilon(), 1 - K.epsilon())
+    loss = -1 * y_true * K.log(clip_pred)
+    return K.mean(K.sum(loss, axis=1))
 
 def normalize(x):
     total = np.sum(x)
@@ -38,6 +44,11 @@ class PolicyAgent(Agent):
         self._encoder = encoder
         self._collector = None
         self._temperature = 0.0
+
+    def predict(self, game_state):
+        encoded_state = self._encoder.encode(game_state)
+        input_tensor = np.array([encoded_state])
+        return self._model.predict(input_tensor, verbose=0)[0]
 
     def set_temperature(self, temperature):
         self._temperature = temperature
@@ -84,11 +95,9 @@ class PolicyAgent(Agent):
         h5file.create_group('model')
         kerasutil.save_model_to_hdf5_group(self._model, h5file['model'])
 
-    def train(self, experience, lr, clipnorm, batch_size):
-        self._model.compile(
-            loss='categorical_crossentropy',
-            optimizer=SGD(learning_rate=lr, clipnorm=clipnorm)
-        )
+    def train(self, experience, lr=0.0000001, clipnorm=1.0, batch_size=512):
+        opt = SGD(learning_rate=lr, clipnorm=clipnorm)
+        self._model.compile(loss='categorical_crossentropy', optimizer=opt)
 
         target_vectors = prepare_experience_data(
             experience,

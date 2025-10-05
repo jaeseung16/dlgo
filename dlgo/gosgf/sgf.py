@@ -2,8 +2,8 @@ import datetime
 
 import six
 
-import sgf_grammar
-import sgf_properties
+from dlgo.gosgf import sgf_grammar
+from dlgo.gosgf import sgf_properties
 
 __all__ = [
     'Node',

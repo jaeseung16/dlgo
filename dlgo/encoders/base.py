@@ -1,5 +1,10 @@
 import importlib
 
+__all__ = [
+    'Encoder',
+    'get_encoder_by_name',
+]
+
 
 class Encoder:
     def name(self):

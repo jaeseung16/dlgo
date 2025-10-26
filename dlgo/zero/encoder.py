@@ -34,7 +34,7 @@ class ZeroEncoder:
                     board_tensor[r][c][9] = 1
 
                 if go_string is None:
-                    if game_state.does_move_violate_go(next_player, Move.play(p)):
+                    if game_state.does_move_violate_ko(next_player, Move.play(p)):
                         board_tensor[r][c][10] = 1
                 else:
                     liberty_plane = min(4, go_string.num_liberties) - 1
@@ -57,6 +57,9 @@ class ZeroEncoder:
         row = index // self.board_size
         col = index % self.board_size
         return Move.play(Point(row=row + 1, col=col + 1))
+
+    def num_moves(self):
+        return self.board_size * self.board_size + 1
 
     def shape(self):
         return self.board_size, self.board_size, self.num_planes

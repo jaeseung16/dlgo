@@ -75,7 +75,8 @@ class ZeroAgent(Agent):
         for i in range(self.num_rounds):
             node = root
             next_move = self.select_branch(node)
-            while node.has_child(next_move):
+            # TODO: what happens if next_move is pass?
+            while node.has_child(next_move) and not next_move.is_pass:
                 node = node.get_child(next_move)
                 next_move = self.select_branch(node)
 
@@ -114,8 +115,7 @@ class ZeroAgent(Agent):
     def create_node(self, game_state, move=None, parent=None):
         state_tensor = self.encoder.encode(game_state)
         model_input = np.array([state_tensor])
-        priors, values = self.model.predict(model_input)
-        # TODO priors?
+        priors, values = self.model.predict(model_input, verbose=0)
         priors = priors[0]
         value = values[0][0]
         move_priors = { self.encoder.decode_move_index(idx): p for idx, p in enumerate(priors) }

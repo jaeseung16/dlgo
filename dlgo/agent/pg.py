@@ -2,9 +2,8 @@ import numpy as np
 from keras import backend as K
 from keras.optimizers import SGD
 
-# TODO: Need to import from fast implementations?
 from dlgo.agent.base import Agent
-from dlgo.agent.helpers import is_point_an_eye
+from dlgo.agent.helpers_fast import is_point_an_eye
 from dlgo import encoders
 from dlgo import goboard
 from dlgo import kerasutil
@@ -20,6 +19,7 @@ def policy_gradient_loss(y_true, y_pred):
     clip_pred = K.clip(y_pred, K.epsilon(), 1 - K.epsilon())
     loss = -1 * y_true * K.log(clip_pred)
     return K.mean(K.sum(loss, axis=1))
+
 
 def normalize(x):
     total = np.sum(x)
@@ -60,14 +60,14 @@ class PolicyAgent(Agent):
         num_moves = self.encoder.board_width * self.encoder.board_height
 
         board_tensor = self.encoder.encode(game_state)
-        X = np.array([board_tensor])
+        x = np.array([board_tensor])
 
         if np.random.random() < self._temperature:
             # Explore random moves.
             move_probs = np.ones(num_moves) / num_moves
         else:
             # Follow our current policy.
-            move_probs = self._model.predict(X, verbose=0)[0]
+            move_probs = self._model.predict(x, verbose=0)[0]
 
         # Prevent move probs from getting stuck at 0 or 1.
         eps = 1e-5

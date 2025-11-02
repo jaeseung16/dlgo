@@ -1,8 +1,7 @@
 import numpy as np
 
-# TODO: Need to import from fast implementations?
 from dlgo.agent.base import Agent
-from dlgo.agent.helpers import is_point_an_eye
+from dlgo.agent.helpers_fast import is_point_an_eye
 from dlgo import encoders
 from dlgo import goboard
 from dlgo import kerasutil
@@ -22,7 +21,7 @@ class DeepLearningAgent(Agent):
     def predict(self, game_state):
         encoded_state = self.encoder.encode(game_state)
         input_tensor = np.array([encoded_state])
-        return self.model.predict(input_tensor)[0]
+        return self.model.predict(input_tensor, verbose=0)[0]
 
     def select_move(self, game_state):
         num_moves = self.encoder.board_width * self.encoder.board_height

@@ -3,7 +3,7 @@ from dlgo.agent.base import Agent
 from dlgo import scoring
 
 
-class TerminationStrategy():
+class TerminationStrategy:
     def __init__(self):
         pass
 
@@ -16,6 +16,7 @@ class TerminationStrategy():
 
 class PassWhenOpponentPasses(TerminationStrategy):
     def should_pass(self, game_state):
+        # TODO: Missing return statement on some paths
         if game_state.last_move is not None:
             return True if game_state.last_move.is_pass else False
 

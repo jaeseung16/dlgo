@@ -17,7 +17,7 @@ import h5py
 import numpy as np
 
 
-class AlphaGoAgnetTest(unittest.TestCase):
+class AlphaGoAgentTest(unittest.TestCase):
     def test_1_supervised_learning(self):
         rows, cols = 19, 19
         encoder = AlphaGoEncoder()

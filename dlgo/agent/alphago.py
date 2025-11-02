@@ -1,7 +1,6 @@
 import numpy as np
 from dlgo.agent.base import Agent
 from dlgo.goboard_fast import Move
-from dlgo import kerasutil
 import operator
 
 
@@ -77,7 +76,7 @@ class AlphaGoMCTS(Agent):
 
             node.update_values(weighted_value)
 
-        move = max(self.root.children, key=lambda move: self.root.children.get(move).visit_count)
+        move = max(self.root.children, key=lambda child: self.root.children.get(child).visit_count)
 
         self.root = AlphaGoNode()
         if move in self.root.children:
@@ -87,7 +86,7 @@ class AlphaGoMCTS(Agent):
         return move
 
     def policy_probabilities(self, game_state):
-        encoder = self.policy._encoder
+        encoder = self.policy.encoder
         outputs = self.policy.predict(game_state)
         legal_moves = game_state.legal_moves()
         if not legal_moves:
@@ -120,5 +119,3 @@ class AlphaGoMCTS(Agent):
 
     def serialize(self, h5file):
         raise IOError("AlphaGoMCTS agent can\'t be serialized. Consider serializing the three underlying neural networks instead.")
-
-

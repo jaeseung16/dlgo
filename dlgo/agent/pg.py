@@ -41,12 +41,12 @@ class PolicyAgent(Agent):
     def __init__(self, model, encoder):
         Agent.__init__(self)
         self._model = model
-        self._encoder = encoder
+        self.encoder = encoder
         self._collector = None
         self._temperature = 0.0
 
     def predict(self, game_state):
-        encoded_state = self._encoder.encode(game_state)
+        encoded_state = self.encoder.encode(game_state)
         input_tensor = np.array([encoded_state])
         return self._model.predict(input_tensor, verbose=0)[0]
 
@@ -57,9 +57,9 @@ class PolicyAgent(Agent):
         self._collector = collector
 
     def select_move(self, game_state):
-        num_moves = self._encoder.board_width * self._encoder.board_height
+        num_moves = self.encoder.board_width * self.encoder.board_height
 
-        board_tensor = self._encoder.encode(game_state)
+        board_tensor = self.encoder.encode(game_state)
         X = np.array([board_tensor])
 
         if np.random.random() < self._temperature:
@@ -79,7 +79,7 @@ class PolicyAgent(Agent):
         candidates = np.arange(num_moves)
         ranked_moves = np.random.choice(candidates, num_moves, replace=False, p=move_probs)
         for point_idx in ranked_moves:
-            point = self._encoder.decode_point_index(point_idx)
+            point = self.encoder.decode_point_index(point_idx)
             if game_state.is_valid_move(goboard.Move.play(point)) and not is_point_an_eye(game_state.board, point, game_state.next_player):
                 if self._collector is not None:
                     self._collector.record_decision(state=board_tensor, action=point_idx)
@@ -89,9 +89,9 @@ class PolicyAgent(Agent):
 
     def serialize(self, h5file):
         h5file.create_group('encoder')
-        h5file['encoder'].attrs['name'] = self._encoder.name()
-        h5file['encoder'].attrs['board_width'] = self._encoder.board_width
-        h5file['encoder'].attrs['board_height'] = self._encoder.board_height
+        h5file['encoder'].attrs['name'] = self.encoder.name()
+        h5file['encoder'].attrs['board_width'] = self.encoder.board_width
+        h5file['encoder'].attrs['board_height'] = self.encoder.board_height
         h5file.create_group('model')
         kerasutil.save_model_to_hdf5_group(self._model, h5file['model'])
 
@@ -101,8 +101,8 @@ class PolicyAgent(Agent):
 
         target_vectors = prepare_experience_data(
             experience,
-            self._encoder.board_width,
-            self._encoder.board_height
+            self.encoder.board_width,
+            self.encoder.board_height
         )
 
         self._model.fit(experience.states, target_vectors, batch_size=batch_size, epochs=1)

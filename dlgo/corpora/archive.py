@@ -8,6 +8,7 @@ __all__ = [
     'SGF',
     'SGFLocator',
     'find_sgfs',
+    'tarball_iterator',
 ]
 
 
@@ -60,7 +61,8 @@ class SGFLocator(object):
 
 class TarballSGFLocator(SGFLocator):
     def __init__(self, tarball_path, archive_filename):
-        SGFLocator.__init__(self)
+        # TODO: Need to learn about inheritance in Python
+        SGFLocator.__init__(self, tarball_path, archive_filename)
         self.tarball_path = tarball_path
         self.archive_filename = archive_filename
 
@@ -73,6 +75,7 @@ class TarballSGFLocator(SGFLocator):
 
 def find_sgfs(path):
     """Find all SGFs in a directory or archive"""
+    # TODO: Missing return statement on some paths
     print(('Examining %s...' % (path, )))
     if os.path.isdir(path):
         return _walk_dir(path)

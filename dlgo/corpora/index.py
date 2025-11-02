@@ -2,11 +2,9 @@ import copy
 import itertools
 import json
 
-from tensorflow.python.eager.polymorphic_function.polymorphic_function import class_method_to_instance_method
-
-from .archive import SGFLocator, find_sgfs, tarball_iterator
-from ..goboard_fast import Board
-from ..gosgf import Sgf_game
+from dlgo.corpora.archive import SGFLocator, find_sgfs, tarball_iterator
+from dlgo.goboard_fast import Board
+from dlgo.gosgf import Sgf_game
 
 __all__ = [
     'CorpusIndex',
@@ -59,13 +57,13 @@ class CorpusIndex(object):
     def get_chunk(self, chunk_number):
         assert 0 <= chunk_number < self.num_chunks
         chunk_start = self.boundaries[chunk_number]
-        iterator = iter(self._generate_exmaples(chunk_start.locator))
+        iterator = iter(self._generate_examples(chunk_start.locator))
         # Skip to the appropriate move in the current game.
         for _ in range(chunk_start.position):
             next(iterator)
         return itertools.islice(iterator, self.chunk_size)
 
-    def _fenerate_examples(self, start):
+    def _generate_examples(self, start):
         """
         Args:
             start (SGFLocator)
@@ -82,16 +80,17 @@ class CorpusIndex(object):
                     if game_record.get_handicap() > 0:
                         for setup in game_record.get_root().get_setup_stones():
                             for move in setup:
-                                board.apply_move('b', move)
+                                board.place_stone('b', move)
                     for i, (color, move) in enumerate(_sequence(game_record)):
                         yield copy.deepcopy(board), color, move
                         if move is not None:
-                            board.apply_move(color, move)
+                            board.place_stone(color, move)
                 except ValueError:
                     print(("Invalid SGF data, skipping game record %s" % (sgf,)))
                     print(("Board was:\n%s" % (board,)))
 
-    def _generate_games(self, physical_file):
+    @staticmethod
+    def _generate_games(physical_file):
         with tarball_iterator(physical_file) as tarball:
             for sgf in tarball:
                 yield sgf

@@ -57,7 +57,7 @@ class BetaGoEncoder(Encoder):
         return self.board_width * self.board_height
 
     def shape(self):
-        return (self.board_height, self.board_width, self.num_planes)
+        return self.board_height, self.board_width, self.num_planes
 
 
 def create(board_size):

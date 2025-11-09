@@ -406,7 +406,9 @@ def interpret_ARLN_list(values, context):
     result = []
     for s in values:
         p1, p2 = sgf_grammar.parse_compose(s)
-        result.append(interpret_point(p1, context), interpret_point(p2, context))
+        result.append(
+            (interpret_point(p1, context), interpret_point(p2, context))
+        )
     return result
 
 

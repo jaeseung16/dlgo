@@ -1,5 +1,4 @@
 import re
-import string
 
 
 _propident_re = re.compile(r"\A[A-Z]{1,8}\Z".encode('ascii'))

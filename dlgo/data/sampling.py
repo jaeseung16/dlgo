@@ -1,6 +1,5 @@
 import os
 import random
-
 from dlgo.data.index_processor import KGSIndex
 
 

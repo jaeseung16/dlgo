@@ -137,7 +137,7 @@ class GoDataProcessor:
         file_names = []
         for zip_file_name in files_needed:
             file_name = zip_file_name.replace('.tar.gz', '') + data_type
-            file_names.appened(file_name)
+            file_names.append(file_name)
 
         feature_list = []
         label_list = []

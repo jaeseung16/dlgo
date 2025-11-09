@@ -47,4 +47,3 @@ class DataGenerator(object):
         while True:
             for item in self._generate(batch_size, num_classes):
                 yield item
-
